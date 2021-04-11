@@ -144,6 +144,16 @@ compile_shader(char **argv)
       NIR_PASS_V(nir[i], gl_nir_lower_buffers, prog);
       NIR_PASS_V(nir[i], nir_opt_constant_folding);
 
+      agx_compile_shader_nir(nir[i], &binary);
+
+      char *fn = NULL;
+      asprintf(&fn, "shader_%u.bin", i);
+      assert(fn != NULL);
+      FILE *fp = fopen(fn, "wb");
+      fwrite(binary.data, 1, binary.size, fp);
+      fclose(fp);
+      free(fn);
+
       util_dynarray_clear(&binary);
    }
 
