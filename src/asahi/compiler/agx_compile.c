@@ -281,15 +281,11 @@ agx_compile_shader_nir(nir_shader *nir, struct util_dynarray *binary)
    NIR_PASS_V(nir, nir_lower_mediump_io,
          nir_var_shader_in | nir_var_shader_out, ~0, false);
    NIR_PASS_V(nir, nir_lower_ssbo);
-<<<<<<< HEAD
-   // TODO: re-enable when it's efficient to do so
-=======
 
    /* Varying output is scalar, other I/O is vector */
    if (ctx->stage == MESA_SHADER_VERTEX) {
       NIR_PASS_V(nir, nir_lower_io_to_scalar, nir_var_shader_out);
    }
->>>>>>> 6ae4833bb7c (fixup! agx: Stub NIR backend compiler)
 
    agx_optimize_nir(nir);
 
