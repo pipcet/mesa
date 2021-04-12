@@ -71,7 +71,29 @@ agx_emit_load_attr(agx_builder *b, nir_intrinsic_instr *instr)
 static void
 agx_emit_load_vary(agx_builder *b, nir_intrinsic_instr *instr)
 {
-   unreachable("stub");
+   unsigned components = instr->num_components;
+   bool smooth = instr->intrinsic == nir_intrinsic_load_interpolated_input;
+
+   if (smooth) {
+      nir_intrinsic_instr *parent = nir_src_as_intrinsic(instr->src[0]);
+      assert(parent);
+
+      /* TODO: Interpolation modes */
+      assert(parent->intrinsic ==
+            nir_intrinsic_load_barycentric_pixel);
+   } else {
+      unreachable("todo: flat varyings");
+   }
+
+   nir_src *offset = nir_get_io_offset_src(instr);
+   assert(nir_src_is_const(*offset) && "todo: indirects");
+   unsigned imm_index = nir_intrinsic_base(instr) + nir_src_as_uint(*offset);
+
+   agx_instr *ld = agx_ld_vary_to(b, agx_dest_index(&instr->dest),
+         agx_immediate(imm_index));
+
+   if (components != 4)
+      ld->mask = BITFIELD_MASK(components);
 }
 
 static void
