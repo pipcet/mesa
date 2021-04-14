@@ -88,6 +88,7 @@ agx_emit_load_vary(agx_builder *b, nir_intrinsic_instr *instr)
    nir_src *offset = nir_get_io_offset_src(instr);
    assert(nir_src_is_const(*offset) && "todo: indirects");
    unsigned imm_index = nir_intrinsic_base(instr) + nir_src_as_uint(*offset);
+   imm_index = 1; // TODO: why does this fix incorrect swizzle on the result?
 
    agx_instr *ld = agx_ld_vary_to(b, agx_dest_index(&instr->dest),
          agx_immediate(imm_index));
