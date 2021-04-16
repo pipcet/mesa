@@ -247,6 +247,14 @@ agx_emit_alu(agx_builder *b, nir_alu_instr *instr)
    UNOP(fddy_coarse, dfdy);
    UNOP(fddy_fine, dfdy);
 
+   UNOP(mov, mov);
+   UNOP(u2u16, mov);
+   UNOP(u2u32, mov);
+   UNOP(inot, not);
+   BINOP(iand, and);
+   BINOP(ior, or);
+   BINOP(ixor, xor);
+
    case nir_op_fsub: return agx_fadd_to(b, dst, s0, agx_neg(s1));
    case nir_op_fabs: return agx_fmov_to(b, dst, agx_abs(s0));
    case nir_op_fneg: return agx_fmov_to(b, dst, agx_neg(s0));
