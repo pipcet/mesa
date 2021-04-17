@@ -294,6 +294,8 @@ initialize_context(struct gl_context *ctx, gl_api api)
       ctx->Const.MaxVarying = 60 / 4;
       break;
    case 300:
+   case 310:
+   case 320:
       ctx->Const.MaxClipPlanes = 8;
       ctx->Const.MaxCombinedTextureImageUnits = 32;
       ctx->Const.MaxDrawBuffers = 4;
@@ -305,6 +307,9 @@ initialize_context(struct gl_context *ctx, gl_api api)
       ctx->Const.MaxUniformBufferBindings = 84;
       ctx->Const.MaxVertexStreams = 4;
       ctx->Const.MaxTransformFeedbackBuffers = 4;
+      ctx->Const.MaxShaderStorageBufferBindings = 4;
+      ctx->Const.MaxShaderStorageBlockSize = 4096;
+      ctx->Const.MaxAtomicBufferBindings = 4;
 
       ctx->Const.Program[MESA_SHADER_VERTEX].MaxAttribs = 16;
       ctx->Const.Program[MESA_SHADER_VERTEX].MaxTextureImageUnits = 16;
@@ -312,12 +317,14 @@ initialize_context(struct gl_context *ctx, gl_api api)
       ctx->Const.Program[MESA_SHADER_VERTEX].MaxCombinedUniformComponents = 1024;
       ctx->Const.Program[MESA_SHADER_VERTEX].MaxInputComponents = 0; /* not used */
       ctx->Const.Program[MESA_SHADER_VERTEX].MaxOutputComponents = 16 * 4;
+      ctx->Const.Program[MESA_SHADER_VERTEX].MaxShaderStorageBlocks = 16;
 
       ctx->Const.Program[MESA_SHADER_FRAGMENT].MaxTextureImageUnits = 16;
       ctx->Const.Program[MESA_SHADER_FRAGMENT].MaxUniformComponents = 224;
       ctx->Const.Program[MESA_SHADER_FRAGMENT].MaxCombinedUniformComponents = 224;
       ctx->Const.Program[MESA_SHADER_FRAGMENT].MaxInputComponents = 15 * 4;
       ctx->Const.Program[MESA_SHADER_FRAGMENT].MaxOutputComponents = 0; /* not used */
+      ctx->Const.Program[MESA_SHADER_FRAGMENT].MaxShaderStorageBlocks = 16;
 
       ctx->Const.MaxVarying = ctx->Const.Program[MESA_SHADER_FRAGMENT].MaxInputComponents / 4;
       break;
@@ -403,6 +410,8 @@ standalone_compile_shader(const struct standalone_options *_options,
    switch (options->glsl_version) {
    case 100:
    case 300:
+   case 310:
+   case 320:
       glsl_es = true;
       break;
    case 110:
