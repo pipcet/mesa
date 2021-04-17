@@ -668,6 +668,7 @@ agx_compile_shader_nir(nir_shader *nir, struct util_dynarray *binary)
       agx_print_shader(ctx, stdout);
 
    agx_optimizer(ctx);
+   agx_dce(ctx);
 
    if (agx_debug & AGX_DBG_SHADERS && !skip_internal)
       agx_print_shader(ctx, stdout);
