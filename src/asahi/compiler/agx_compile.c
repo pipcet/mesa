@@ -616,12 +616,14 @@ agx_optimize_nir(nir_shader *nir)
 }
 
 void
-agx_compile_shader_nir(nir_shader *nir, struct util_dynarray *binary)
+agx_compile_shader_nir(nir_shader *nir, struct util_dynarray *binary,
+      struct agx_compiled_shader *out)
 {
    agx_debug = debug_get_option_agx_debug();
 
    agx_context *ctx = rzalloc(NULL, agx_context);
    ctx->nir = nir;
+   ctx->out = out;
    ctx->stage = nir->info.stage;
    list_inithead(&ctx->blocks);
 

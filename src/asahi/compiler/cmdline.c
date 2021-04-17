@@ -145,7 +145,8 @@ compile_shader(char **argv)
       NIR_PASS_V(nir[i], gl_nir_lower_buffers, prog);
       NIR_PASS_V(nir[i], nir_opt_constant_folding);
 
-      agx_compile_shader_nir(nir[i], &binary);
+      struct agx_compiled_shader out = { 0 };
+      agx_compile_shader_nir(nir[i], &binary, &out);
 
       char *fn = NULL;
       asprintf(&fn, "shader_%u.bin", i);
@@ -154,6 +155,8 @@ compile_shader(char **argv)
       fwrite(binary.data, 1, binary.size, fp);
       fclose(fp);
       free(fn);
+
+      printf("Pushed %u ranges\n", out.push_ranges);
 
       util_dynarray_clear(&binary);
    }

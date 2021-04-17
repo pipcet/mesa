@@ -29,6 +29,7 @@
 #include "util/u_math.h"
 #include "util/half_float.h"
 #include "util/u_dynarray.h"
+#include "agx_compile.h"
 #include "agx_opcodes.h"
 
 enum agx_dbg {

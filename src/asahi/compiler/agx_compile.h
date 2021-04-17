@@ -27,8 +27,61 @@
 #include "compiler/nir/nir.h"
 #include "util/u_dynarray.h"
 
+enum agx_push_type {
+   /* Array of 64-bit pointers to the base addresses (BASES) and array of
+    * 16-bit sizes for optional bounds checking (SIZES) */
+   AGX_PUSH_UBO_BASES = 0,
+   AGX_PUSH_UBO_SIZES = 1,
+   AGX_PUSH_VBO_BASES = 2,
+   AGX_PUSH_VBO_SIZES = 3,
+   AGX_PUSH_SSBO_BASES = 4,
+   AGX_PUSH_SSBO_SIZES = 5,
+
+   /* Push the attached constant memory */
+   AGX_PUSH_CONSTANTS = 6,
+
+   /* Push the content of a UBO */
+   AGX_PUSH_UBO_DATA = 7,
+
+   /* Keep last */
+   AGX_PUSH_NUM_TYPES
+};
+
+struct agx_push {
+   /* Contents to push */
+   enum agx_push_type type : 8;
+
+   /* Base of where to push, indexed in 16-bit units. The uniform file contains
+    * 512 = 2^9 such units. */
+   unsigned base : 9;
+
+   /* Number of 16-bit units to push */
+   unsigned length : 9;
+
+   /* If set, rather than pushing the specified data, push a pointer to the
+    * specified data. This is slower to access but enables indirect access, as
+    * the uniform file does not support indirection. */
+   bool indirect : 1;
+
+   union {
+      struct {
+         uint16_t ubo;
+         uint16_t offset;
+      } ubo_data;
+   };
+};
+
+/* Arbitrary */
+#define AGX_MAX_PUSH_RANGES (16)
+
+struct agx_compiled_shader {
+   unsigned push_ranges;
+   struct agx_push push[AGX_MAX_PUSH_RANGES];
+};
+
 void
-agx_compile_shader_nir(nir_shader *nir, struct util_dynarray *binary);
+agx_compile_shader_nir(nir_shader *nir, struct util_dynarray *binary,
+      struct agx_compiled_shader *out);
 
 static const nir_shader_compiler_options agx_nir_options = {
    .lower_scmp = true,
