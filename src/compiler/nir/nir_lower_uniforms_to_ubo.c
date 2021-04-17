@@ -59,9 +59,10 @@ lower_instr(nir_intrinsic_instr *instr, nir_builder *b, int multiplier)
    if (instr->intrinsic == nir_intrinsic_load_uniform) {
       nir_ssa_def *ubo_idx = nir_imm_int(b, 0);
       nir_ssa_def *ubo_offset =
-         nir_iadd(b, nir_imm_int(b, multiplier * nir_intrinsic_base(instr)),
-                  nir_imul(b, nir_imm_int(b, multiplier),
-                           nir_ssa_for_src(b, instr->src[0], 1)));
+         nir_iadd_imm(b,
+               nir_imul_imm(b, nir_ssa_for_src(b, instr->src[0], 1),
+                  multiplier),
+               multiplier * nir_intrinsic_base(instr));
 
       nir_intrinsic_instr *load =
          nir_intrinsic_instr_create(b->shader, nir_intrinsic_load_ubo);
