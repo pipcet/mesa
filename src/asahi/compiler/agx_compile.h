@@ -79,6 +79,47 @@ struct agx_compiled_shader {
    struct agx_push push[AGX_MAX_PUSH_RANGES];
 };
 
+#define AGX_MAX_RTS (8)
+#define AGX_MAX_ATTRIBS (16)
+#define AGX_MAX_VBUFS (16)
+
+enum agx_format {
+   AGX_FORMAT_I8 = 0,
+   AGX_FORMAT_I16 = 1,
+   AGX_FORMAT_I32 = 2,
+   AGX_FORMAT_F16 = 3,
+   AGX_FORMAT_U8NORM = 4,
+   AGX_FORMAT_S8NORM = 5,
+   AGX_FORMAT_U16NORM = 6,
+   AGX_FORMAT_S16NORM = 7,
+   AGX_FORMAT_RGB10A2 = 8,
+   AGX_FORMAT_SRGBA8 = 10,
+   AGX_FORMAT_RG11B10F = 12,
+   AGX_FORMAT_RGB9E5 = 13,
+};
+
+struct agx_attribute {
+   unsigned buf : 5;
+   unsigned src_offset : 16;
+   unsigned nr_comps_minus_1 : 2;
+   enum agx_format format : 4;
+};
+
+struct agx_shader_key {
+   union {
+      struct {
+         unsigned num_vbufs;
+         unsigned vbuf_strides[AGX_MAX_VBUFS];
+
+         struct agx_attribute attributes[AGX_MAX_ATTRIBS];
+      } vs;
+
+      struct {
+         enum agx_format tib_formats[AGX_MAX_RTS];
+      } fs;
+   };
+};
+
 void
 agx_compile_shader_nir(nir_shader *nir, struct util_dynarray *binary,
       struct agx_compiled_shader *out);
