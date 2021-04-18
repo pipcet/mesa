@@ -121,7 +121,9 @@ struct agx_shader_key {
 };
 
 void
-agx_compile_shader_nir(nir_shader *nir, struct util_dynarray *binary,
+agx_compile_shader_nir(nir_shader *nir,
+      struct agx_shader_key *key,
+      struct util_dynarray *binary,
       struct agx_compiled_shader *out);
 
 static const nir_shader_compiler_options agx_nir_options = {
